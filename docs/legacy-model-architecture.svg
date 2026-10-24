@@ -1,0 +1,60 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1000" height="1210" viewBox="0 0 1000 1210" role="img" aria-label="Compact task-aware repair and hybrid RUL model">
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#334155"/></marker>
+<marker id="bluearrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="#2563eb"/></marker></defs>
+<rect width="100%" height="100%" fill="white"/>
+<style>text{font-family:'Noto Sans',Arial,sans-serif;fill:#172b46} .sub{font-size:19px;fill:#43576d} .title{font-size:22px;font-weight:700} .note{font-size:18px;fill:#52657a}</style>
+<text x="500" y="40" text-anchor="middle" font-size="27" font-weight="700">COMPACT RESEARCH-INTEGRATED RUL MODEL</text>
+<rect x="260" y="80" width="480" height="110" rx="13" fill="#edf5ff" stroke="#80a8d8" stroke-width="2"/>
+<text x="500.0" y="111" text-anchor="middle" class="title">Historical input at cycle t</text>
+<text x="500.0" y="140" text-anchor="middle" class="sub">21 sensors + 3 operating settings</text>
+<text x="500.0" y="165" text-anchor="middle" class="sub">Original trusted masks + time since observation</text>
+<rect x="260" y="240" width="480" height="120" rx="13" fill="#ecf8f4" stroke="#7cbca7" stroke-width="2"/>
+<text x="500.0" y="271" text-anchor="middle" class="title">Task-aware causal repair  [P2]</text>
+<text x="500.0" y="300" text-anchor="middle" class="sub">GRU(32) -&gt; 21 sensor estimates</text>
+<text x="500.0" y="325" text-anchor="middle" class="sub">Merge replaces only untrusted positions</text>
+<text x="500.0" y="350" text-anchor="middle" class="sub">Trusted observations remain unchanged</text>
+<rect x="260" y="410" width="480" height="100" rx="13" fill="#edf5ff" stroke="#80a8d8" stroke-width="2"/>
+<text x="500.0" y="441" text-anchor="middle" class="title">Local temporal features  [P1]</text>
+<text x="500.0" y="470" text-anchor="middle" class="sub">66 input channels -&gt; Conv(32, k3) -&gt; Conv(64, k5)</text>
+<text x="500.0" y="495" text-anchor="middle" class="sub">Output: [B, 30, 64]</text>
+<rect x="60" y="575" width="360" height="110" rx="13" fill="#edf5ff" stroke="#80a8d8" stroke-width="2"/>
+<text x="240.0" y="606" text-anchor="middle" class="title">Recurrent context  [P1]</text>
+<text x="240.0" y="635" text-anchor="middle" class="sub">One GRU, hidden 64</text>
+<text x="240.0" y="660" text-anchor="middle" class="sub">Last hidden vector: [B,64]</text>
+<rect x="580" y="575" width="360" height="110" rx="13" fill="#edf5ff" stroke="#80a8d8" stroke-width="2"/>
+<text x="760.0" y="606" text-anchor="middle" class="title">Attention context  [P3/P4]</text>
+<text x="760.0" y="635" text-anchor="middle" class="sub">One encoder, 4 heads, d=64</text>
+<text x="760.0" y="660" text-anchor="middle" class="sub">Causal mask + position encoding</text>
+<rect x="320" y="750" width="360" height="100" rx="13" fill="#ecf8f4" stroke="#7cbca7" stroke-width="2"/>
+<text x="500.0" y="781" text-anchor="middle" class="title">Gated feature fusion</text>
+<text x="500.0" y="810" text-anchor="middle" class="sub">Combine recurrent + attention</text>
+<text x="500.0" y="835" text-anchor="middle" class="sub">Fused representation: [B,64]</text>
+<rect x="25" y="750" width="250" height="100" rx="13" fill="#edf5ff" stroke="#80a8d8" stroke-width="2"/>
+<text x="150.0" y="781" text-anchor="middle" class="title">Statistical bypass</text>
+<text x="150.0" y="810" text-anchor="middle" class="sub">Causal rolling features</text>
+<text x="150.0" y="835" text-anchor="middle" class="sub">16 features + 3 quality</text>
+<rect x="260" y="920" width="480" height="120" rx="13" fill="#f3effc" stroke="#ac98d3" stroke-width="2"/>
+<text x="500.0" y="951" text-anchor="middle" class="title">Small spline readout  [P4]</text>
+<text x="500.0" y="980" text-anchor="middle" class="sub">64 fused + 16 statistics + 3 quality -&gt; 32</text>
+<text x="500.0" y="1005" text-anchor="middle" class="sub">KAN: 32 -&gt; 8 -&gt; 1; cubic grid 5</text>
+<text x="500.0" y="1030" text-anchor="middle" class="sub">Tanh bottleneck; training-fitted knots</text>
+<rect x="260" y="1090" width="480" height="90" rx="13" fill="#fff6e7" stroke="#d8b16c" stroke-width="2"/>
+<text x="500.0" y="1121" text-anchor="middle" class="title">Capped RUL estimate</text>
+<text x="500.0" y="1150" text-anchor="middle" class="sub">125 * sigmoid(output); near cap shown as 125+</text>
+<path d="M 500 190 V 240" fill="none" stroke="#334155" stroke-width="2.4" marker-end="url(#arrow)"/>
+<path d="M 500 360 V 410" fill="none" stroke="#334155" stroke-width="2.4" marker-end="url(#arrow)"/>
+<path d="M 500 510 V 540 H 240 V 575" fill="none" stroke="#334155" stroke-width="2.4" marker-end="url(#arrow)"/>
+<path d="M 500 510 V 540 H 760 V 575" fill="none" stroke="#334155" stroke-width="2.4" marker-end="url(#arrow)"/>
+<path d="M 240 685 V 720 H 500 V 750" fill="none" stroke="#334155" stroke-width="2.4" marker-end="url(#arrow)"/>
+<path d="M 760 685 V 720 H 500 V 750" fill="none" stroke="#334155" stroke-width="2.4" marker-end="url(#arrow)"/>
+<path d="M 500 850 V 920" fill="none" stroke="#334155" stroke-width="2.4" marker-end="url(#arrow)"/>
+<path d="M 275 800 H 295 V 885 H 400 V 920" fill="none" stroke="#334155" stroke-width="2.4" marker-end="url(#arrow)"/>
+<path d="M 500 1040 V 1090" fill="none" stroke="#334155" stroke-width="2.4" marker-end="url(#arrow)"/>
+<path d="M 740 135 H 970 V 460 H 740" fill="none" stroke="#2563eb" stroke-width="2.4" stroke-dasharray="8 6" marker-end="url(#bluearrow)"/>
+<text x="857" y="288" text-anchor="middle" class="note" style="fill:#2563eb">Original masks</text>
+<text x="857" y="315" text-anchor="middle" class="note" style="fill:#2563eb">and gaps bypass</text>
+<text x="857" y="342" text-anchor="middle" class="note" style="fill:#2563eb">the repair step</text>
+<path d="M 260 135 H 12 V 800 H 25" fill="none" stroke="#334155" stroke-width="2.4" marker-end="url(#arrow)"/>
+<text x="36" y="410" font-size="18" fill="#52657a" transform="rotate(-90 36 410)">Observed-data features only</text>
+<text x="500" y="1203" text-anchor="middle" class="note">Next: bounded correction [P3] -> independent interval -> triage</text>
+</svg>

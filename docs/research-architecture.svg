@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="790" viewBox="0 0 1400 790" role="img" aria-labelledby="title desc">
+  <title id="title">AeroGuard selected research architecture and evaluation order</title>
+  <desc id="desc">Fit-only preprocessing feeds a Transformer, spline KAN and BiLSTM. A matched operating-condition gate is a proposed ablation. Validation chooses the variant before official test evaluation. SHAP and LIME are the final analysis stage, followed by checksummed website exports. Training remains for the user to execute.</desc>
+  <defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L8,3 L0,6" fill="none" stroke="#3478F6" stroke-width="1.5"/></marker></defs>
+  <style>text{font-family:Inter,Arial,sans-serif;fill:#172A46}.title{font-size:30px;font-weight:700}.sub{font-size:15px;fill:#64748B}.label{font-size:17px;font-weight:700}.small{font-size:13px;fill:#64748B}.blue{fill:#2464CD}.line{fill:none;stroke:#3478F6;stroke-width:2;marker-end:url(#arrow)}.box{fill:white;stroke:#E1EAF4;stroke-width:1.5}</style>
+  <rect width="1400" height="790" rx="20" fill="#F4F8FD"/>
+  <rect x="0" y="0" width="1400" height="7" fill="#FF8A24"/>
+  <text x="50" y="65" class="title">AeroGuard · Transformer–KAN–BiLSTM</text>
+  <text x="50" y="95" class="sub">Xu et al. architecture + a controlled operating-condition gate · FD001–FD004 · user-run GPU training</text>
+  <rect x="50" y="135" width="1300" height="205" rx="16" fill="#FFFFFF" stroke="#E1EAF4"/>
+  <text x="73" y="166" class="small blue">HISTORICAL INPUT ONLY · READINGS AT OR BEFORE CYCLE t</text>
+  <rect x="75" y="190" width="205" height="115" rx="12" class="box"/>
+  <text x="92" y="222" class="label">Fit-only preparation</text>
+  <text x="92" y="248" class="small">3 settings + 21 sensors</text><text x="92" y="271" class="small">Trailing mean · fixed scaling</text><text x="92" y="291" class="small">Engine-disjoint split</text>
+  <path d="M282 248 H321" class="line"/>
+  <rect x="325" y="190" width="205" height="115" rx="12" class="box"/>
+  <text x="343" y="222" class="label">Transformer</text><text x="343" y="248" class="small">6 encoders + 6 decoders</text><text x="343" y="271" class="small">Observed sensor tokens</text><text x="343" y="291" class="small">No target teacher forcing</text>
+  <path d="M532 248 H571" class="line"/>
+  <rect x="575" y="190" width="205" height="115" rx="12" class="box"/>
+  <text x="593" y="222" class="label">Spline KAN</text><text x="593" y="248" class="small">Learnable B-spline edges</text><text x="593" y="271" class="small">Fit-only adaptive grids</text><text x="593" y="291" class="small">Activation L1 + entropy</text>
+  <path d="M782 248 H821" class="line"/>
+  <rect x="825" y="190" width="205" height="115" rx="12" fill="#FFF7ED" stroke="#F0D3AE"/>
+  <text x="843" y="222" class="label">Condition gate</text><text x="843" y="248" class="small">Optional matched extension</text><text x="843" y="271" class="small">Observed settings only</text><text x="843" y="291" class="small">Factor bounded to 0.5–1.5</text>
+  <path d="M1032 248 H1071" class="line"/>
+  <rect x="1075" y="190" width="250" height="115" rx="12" class="box"/>
+  <text x="1093" y="222" class="label">BiLSTM → RUL</text><text x="1093" y="248" class="small">Both directions inside history</text><text x="1093" y="271" class="small">Current + 9 future horizons</text><text x="1093" y="291" class="small">Uncapped RUL by default</text>
+  <path d="M1200 343 V360 H1030 V380" class="line"/>
+  <rect x="735" y="382" width="590" height="115" rx="14" class="box"/>
+  <text x="758" y="416" class="label">Select on held-out validation engines</text><text x="758" y="443" class="small">Matched paper / condition-gate runs · fixed prefixes · same requested seeds</text><text x="758" y="470" class="small">Retain paper on ties or worse mean validation RMSE; freeze selection.</text>
+  <path d="M733 440 H690" class="line"/>
+  <rect x="75" y="382" width="610" height="115" rx="14" class="box"/>
+  <text x="98" y="416" class="label">Evaluate untouched official test endpoints</text><text x="98" y="443" class="small">Freeze predictions before reading endpoint truth · RMSE / MAE / R² / NASA</text><text x="98" y="470" class="small">The paper's merged/repartitioned scores use a different evaluation protocol.</text>
+  <path d="M380 500 V538" class="line"/>
+  <rect x="75" y="542" width="610" height="140" rx="14" fill="#FFF7ED" stroke="#F0D3AE"/>
+  <text x="98" y="578" class="label">SHAP + LIME · final analysis stage</text><text x="98" y="606" class="small">Whole sensor-history groups · fitting-engine backgrounds · fixed settings</text><text x="98" y="631" class="small">SHAP additivity residual · LIME coefficients and held-out fidelity</text><text x="98" y="656" class="small">No explanation feedback into fitting or selection; no causal diagnosis claim.</text>
+  <path d="M688 612 H730" class="line"/>
+  <rect x="735" y="542" width="590" height="140" rx="14" class="box"/>
+  <text x="758" y="578" class="label">Verified website integration</text><text x="758" y="606" class="small">Model + FP32 inference probes + predictions + explanations + checksums</text><text x="758" y="631" class="small">Import ZIP → research registry → engine results and explanation evidence</text><text x="758" y="656" class="small">Missing artifacts/dependencies show an explicit pending state.</text>
+  <text x="75" y="735" class="sub">Proposed extension ≠ established novelty or measured improvement. GPU training and real neural explanations await the user's run.</text>
+</svg>
