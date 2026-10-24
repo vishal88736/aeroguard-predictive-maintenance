@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="820" viewBox="0 0 1200 820" role="img" aria-labelledby="title description">
+  <title id="title">Original stylized suspension bridge illustration</title>
+  <desc id="description">A generic suspension bridge silhouette above a bay in warm evening colors. No institutional logos or supplied reference artwork.</desc>
+  <defs><linearGradient id="sky" x2="0" y2="1"><stop stop-color="#f8d7ba"/><stop offset="1" stop-color="#eebc9b"/></linearGradient><linearGradient id="bay" x2="0" y2="1"><stop stop-color="#b9b9ba"/><stop offset="1" stop-color="#19395b"/></linearGradient></defs>
+  <path fill="url(#sky)" d="M0 0h1200v510H0z"/><path fill="url(#bay)" d="M0 510h1200v310H0z"/>
+  <path d="M0 490 180 435 420 480 670 420 900 474 1200 450V560H0Z" fill="#b8a79b" opacity=".65"/>
+  <g stroke="#9d583f" fill="none"><path d="M40 592 1200 470" stroke-width="24"/><path d="M280 595V135m90 448V135m-90 22h90m-90 105h90m-90 125h90M930 500V255m60 240V255m-60 20h60m-60 85h60m-60 90h60" stroke-width="13"/>
+  <path d="M-100 145Q325 650 325 145Q665 745 960 265Q1090 485 1310 400" stroke-width="6"/>
+  <path d="M40 302V590m65-220v211m65-151v145m65-102v95m190-205v180m65-106v100m65-65v58m65-33v26m65-14v7m65-10v3m65-29v22m65-58v52m65-94v87m190-53v34m65-33v26m65-21v14" stroke-width="3"/>
+  </g><path d="M0 680Q350 630 650 690T1200 675V820H0Z" fill="#183a5b" opacity=".4"/>
+</svg>
