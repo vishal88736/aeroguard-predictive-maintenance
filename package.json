@@ -1,0 +1,14 @@
+{
+  "name": "aeroguard-browser-checks",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Development-only browser tests; AeroGuard itself is buildless.",
+  "scripts": {
+    "check": "node scripts/check_frontend.cjs",
+    "test:browser": "python3 scripts/run_browser_contract.py"
+  },
+  "devDependencies": {
+    "playwright": "1.64.1"
+  },
+  "engines": {"node": ">=20"}
+}

@@ -1,0 +1,14 @@
+# Standalone Transformer-KAN-BiLSTM notebook. Python 3.12 recommended.
+# Install the CUDA torch wheel manually FIRST using the instructions in the notebook.
+# No dependency is installed automatically by a notebook cell.
+torch==2.14.1
+numpy==2.5.4
+pandas==3.1.0
+matplotlib==3.11.2
+jupyterlab==4.6.4
+ipykernel==7.4.0
+nbformat==5.11.1
+# Post-training explanation stage only; no explanation loss enters model fitting.
+scikit-learn==1.9.1
+shap==0.54.1
+lime==0.2.0.1
