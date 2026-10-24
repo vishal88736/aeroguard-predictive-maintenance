@@ -1,0 +1,43 @@
+# Local environments, credentials, package caches and generated state.
+.venv*/
+venv/
+.env*
+!.env.example
+__pycache__/
+*.py[cod]
+.ipynb_checkpoints/
+.cache/
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+node_modules/
+coverage/
+.coverage
+.DS_Store
+
+# Data, trained weights and local experiment/maintenance records stay local.
+/data/cmapss/*
+!/data/cmapss/README.md
+/artifacts/
+/runtime/
+/mlruns/
+/mlartifacts/
+/output/
+/tmp/
+*.db
+*.db-*
+*.sqlite
+*.sqlite-*
+*.pt
+*.pth
+*.ckpt
+*.joblib
+*.pkl
+*.safetensors
+*.zip
+*.log
+
+# Supplied third-party documents and original user reference imagery.
+/*.pdf
+/web/assets/golden-gate-reference.png
+
