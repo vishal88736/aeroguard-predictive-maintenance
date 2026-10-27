@@ -214,7 +214,7 @@ def verify_bundle(folder):
     return manifest
 
 
-def train_model(config, data_dir=DATA_DIR, artifact_dir=ARTIFACT_DIR, progress=None):
+def train_model(config, data_dir=DATA_DIR, artifact_dir=ARTIFACT_DIR, progress=None, *, protocol=None, lineage=None):
     """Fit one baseline using training trajectories only, with three engine cohorts.
 
     Progress callback receives ``(stage_name, actual_record_count, detail)``. This
@@ -239,6 +239,9 @@ def train_model(config, data_dir=DATA_DIR, artifact_dir=ARTIFACT_DIR, progress=N
         "mlflow_run_id": None, "tracking_status": "disabled" if not cfg["track_mlflow"] else "pending",
         "protocol": "Engine-disjoint 60% fit / 20% fixed development / 20% independent calibration; official test untouched",
     }
+    if lineage is not None:
+        metadata["lifecycle"] = dict(lineage)
+        metadata["protocol"] = "Frozen development/calibration engine cohorts; new complete engines enter fitting only; official test untouched"
     write_json(folder / "metadata.json", metadata)
     write_json(folder / "config.json", cfg)
     tracking = None
@@ -249,7 +252,11 @@ def train_model(config, data_dir=DATA_DIR, artifact_dir=ARTIFACT_DIR, progress=N
     try:
         with threadpool_limits(limits=2):
             raw = load_engines(path)
-            split = split_engines(raw, cfg["split_seed"], .2)
+            if protocol is None:
+                split = split_engines(raw, cfg["split_seed"], .2)
+            else:
+                from .mlops_data import protocol_split
+                split = protocol_split(raw, protocol, cfg)
             groups = [set(split[k]) for k in ("fit", "selection", "calibration")]
             if any(groups[i] & groups[j] for i in range(3) for j in range(i)):
                 raise ValueError("Engine cohorts overlap")
@@ -323,6 +330,9 @@ def train_model(config, data_dir=DATA_DIR, artifact_dir=ARTIFACT_DIR, progress=N
             write_json(folder / "training_mapping.json", mapping)
             write_json(folder / "validation_predictions.json", validation_predictions)
             immutable = ["model.joblib", "preprocessing.joblib", "anomaly.joblib", "config.json", "split.json", "calibration.json", "feature_names.json", "training_mapping.json", "validation_predictions.json"]
+            if lineage is not None:
+                write_json(folder / "lineage.json", lineage)
+                immutable.append("lineage.json")
             write_json(folder / "bundle_hashes.json", {name: file_hash(folder / name) for name in immutable})
             metadata.update(
                 training_status="complete", finished_at=utcnow(), duration_seconds=round(time.perf_counter() - begin, 4),

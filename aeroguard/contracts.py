@@ -71,6 +71,51 @@ class PipelineRequest(StrictModel):
     cycles: int = Field(30, ge=3, le=150)
 
 
+class MLOpsBootstrap(StrictModel):
+    subsets: list[Subset] = Field(default_factory=lambda: ["FD001", "FD002", "FD003", "FD004"], min_length=1, max_length=4)
+
+    @model_validator(mode="after")
+    def unique_subsets(self):
+        if len(set(self.subsets)) != len(self.subsets):
+            raise ValueError("Subsets must be unique")
+        return self
+
+
+class LifecycleRequest(StrictModel):
+    version_id: str = Field(pattern=r"^DV-FD00[1-4]-[a-f0-9]{20}$")
+    training: TrainRequest | None = None
+    force_retrain: bool = False
+    monitor_only: bool = False
+
+
+class LifecycleSettings(StrictModel):
+    enabled: bool = False
+    auto_retrain: bool = False
+    orchestrator: Literal["local", "airflow"] = "local"
+    interval_seconds: int = Field(60, ge=5, le=86400)
+    max_attempts: int = Field(3, ge=1, le=10)
+    min_engines_per_regime: int = Field(20, ge=5, le=1000)
+    ks_alpha: float = Field(.01, gt=0, le=.1)
+    ks_min_effect: float = Field(.2, gt=0, le=1)
+    drift_sensor_count: int = Field(3, ge=1, le=21)
+    maximum_missing_fraction: float = Field(.02, ge=0, le=.2)
+    reference_cycles: int = Field(30, ge=5, le=100)
+    minimum_rmse_improvement_percent: float = Field(0, ge=0, le=50)
+    minimum_nasa_improvement_percent: float = Field(0, ge=0, le=50)
+
+
+class RegisterRequest(StrictModel):
+    run_id: str = Field(pattern=r"^AG-FD00[1-4]-[a-f0-9]{12}$")
+
+
+class ReviewResolve(StrictModel):
+    notes: str = Field(min_length=1, max_length=1500)
+
+
+class ResearchTrackRequest(StrictModel):
+    run_id: str = Field(pattern=r"^KAN-FD00[1-4]-(?:paper|conditioned_kan)-\d{1,10}-[a-f0-9]{12}$")
+
+
 class PromoteRequest(StrictModel):
     run_id: str = Field(pattern=r"^AG-FD00[1-4]-[a-f0-9]{12}$")
     rollback: bool = False

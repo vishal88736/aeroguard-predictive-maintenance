@@ -46,3 +46,7 @@ Benchmark engine detail paths are URL-encoded in API calls. Browser routes may u
 
 The research endpoints and download routes are documented in [RESEARCH_WORKFLOW.md](RESEARCH_WORKFLOW.md#api-additions). `ResearchManifest` in `aeroguard/research.py` validates source/model/selection/explanation contracts; browser types are in `frontend/api.d.ts`. Invalid archives or inconsistent evidence return structured 400 responses, conflicting immutable artifacts return 409, and missing optional neural dependencies return 503 with `research_dependency_unavailable`. Query/path validation remains Pydantic 422. Research imports never replace the CPU active-model map.
 
+
+## Versioned MLOps endpoints
+
+The `/api/mlops` endpoint family manages immutable incoming versions, monitoring, fixed-cohort training, registration, scheduling and reviews. Typed mutation payloads and background job IDs follow the existing API conventions. See [MLOPS.md](MLOPS.md#api-and-verification) and the generated [OpenAPI schema](openapi.json) for exact contracts.

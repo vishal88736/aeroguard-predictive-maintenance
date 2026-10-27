@@ -40,3 +40,7 @@ The primary notebook now follows Transformer–KAN–BiLSTM with a validation-co
 
 See [research workflow](RESEARCH_WORKFLOW.md) and [architecture diagram](research-architecture.svg) for exact module order, data boundaries, proposed extension, environment, artifacts and verification limits. The rest of this document describes the existing application/CPU pipeline.
 
+
+## Versioned MLOps lifecycle
+
+The application now includes immutable incoming datasets, frozen development/calibration protocols, regime-conditioned engine-level drift screening, actual MLflow registered inference bundles and aliases, durable scheduled jobs, exception review and new-data challenger fitting. The optional Airflow adapter calls the same lifecycle API. Observed batches serve the active CPU champion and retain their own histories without becoming supervised labels. See [MLOPS.md](MLOPS.md) for the current full diagram, promotion/recovery contracts, setup and execution boundaries. The existing frontend and theme remain in use.

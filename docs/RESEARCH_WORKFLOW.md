@@ -85,3 +85,7 @@ The app's existing CPU baseline, independent anomaly model and simulated work-or
 | `GET /documents/research.svg` | Selected architecture and explanation order |
 
 Tests using isolated export fixtures verify contracts and failure handling; their made-up weights/metrics are never installed into the real catalog or presented as benchmark results. These tests do not establish GPU training, TorchScript numerical compatibility or actual SHAP/LIME performance in the absent research environment.
+
+## MLOps tracking of verified exports
+
+After importing a real notebook export, the existing Models page can track its metrics, configuration, weights and SHAP/LIME evidence in the local `AeroGuard-CMAPSS-KAN` MLflow experiment. Tracking verifies and records the export without running GPU training or changing the calibrated maintenance champion. See [MLOPS.md](MLOPS.md#neural-experiments).

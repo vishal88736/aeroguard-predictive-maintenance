@@ -45,9 +45,9 @@ def main():
     def add(file,relative=None):
         file=Path(file)
         if file.is_file():paths[str(relative or file.relative_to(ROOT))]=file
-    for name in ['README.md','VALIDATION.md','requirements.txt','requirements-app.txt','requirements-kan.txt','.env.example','.python-version','.gitignore']:
+    for name in ['README.md','VALIDATION.md','requirements.txt','requirements-app.txt','requirements-kan.txt','.env.example','.python-version','.gitignore','compose.mlops.yml','package.json','package-lock.json']:
         add(ROOT/name)
-    for directory in ['aeroguard','fleetpm','frontend','web','notebooks','docs','tests','scripts']:
+    for directory in ['aeroguard','fleetpm','frontend','web','notebooks','docs','tests','scripts','dags']:
         for file in (ROOT/directory).rglob('*'):
             if file.is_file() and '__pycache__' not in file.parts and '.ipynb_checkpoints' not in file.parts:add(file)
     for file in DATA_DIR.glob('*'):
@@ -56,6 +56,10 @@ def main():
     for file in model_root.rglob('*'):
         if file.is_file() and file.suffix not in {'.db','.sqlite','.db-wal','.db-shm'} and file.name!='mlflow.db' and not file.name.endswith(('-wal','-shm','.tmp')):
             add(file,Path('artifacts/aeroguard')/file.relative_to(model_root))
+    for file in (ARTIFACT_DIR/'mlops').rglob('*'):
+        relative=file.relative_to(ARTIFACT_DIR/'mlops')
+        if file.is_file() and relative.parts[0] not in {'registry','research-tracking'} and file.suffix in {'.json','.txt'}:
+            add(file,Path('artifacts/mlops')/relative)
     # Only validated portable research exports; no giant resumable training state or temporary fixtures.
     from aeroguard.research import ResearchCatalog
     research=ResearchCatalog(ARTIFACT_DIR,DATA_DIR)
@@ -79,7 +83,7 @@ def main():
         manifest={'created_at':datetime.now(timezone.utc).isoformat(),'application':'AeroGuard',
             'includes':['Application source and local assets','Selected local benchmark corpus with provenance','Trained CPU baseline artifacts and active versions','Unexecuted GPU paper/condition-gate notebook with final SHAP/LIME workflow','Validated research exports if user training has produced any','Consistent simulated work-order/job database snapshot','Measured results, tests, browser checks and MLflow history evidence'],
             'excludes':['Virtual environment and package caches','Actual .env or credentials','Original third-party supplied papers','Live MLflow tracking database at its application path'],
-            'relocation_note':'Archived metadata retains original provenance/artifact paths. AeroGuard loads bundles from its configured local registry. Historical MLflow is exported under output/aeroguard; future training creates a fresh local tracking database.',
+            'relocation_note':'Archived metadata retains original provenance/artifact paths. AeroGuard loads bundles from its configured local registry. Historical MLflow is exported under output/aeroguard. Initialize MLOps after relocation to register verified bundles in the new local tracking store without refitting; original training run IDs remain provenance.',
             'sha256':{name:file_hash(path) for name,path in sorted(paths.items())}}
         metadata=Path(temporary)/'PACKAGE_MANIFEST.json';metadata.write_text(json.dumps(manifest,indent=2)+'\n');add(metadata,'PACKAGE_MANIFEST.json')
         pending=package.with_suffix('.zip.tmp')

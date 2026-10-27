@@ -600,6 +600,412 @@
         }
       }
     },
+    "/api/mlops": {
+      "get": {
+        "summary": "Mlops Overview",
+        "operationId": "mlops_overview_api_mlops_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/mlops/settings": {
+      "put": {
+        "summary": "Mlops Settings",
+        "operationId": "mlops_settings_api_mlops_settings_put",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LifecycleSettings"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LifecycleSettings"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/mlops/bootstrap": {
+      "post": {
+        "summary": "Mlops Bootstrap",
+        "operationId": "mlops_bootstrap_api_mlops_bootstrap_post",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Idempotency-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/MLOpsBootstrap"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/mlops/register": {
+      "post": {
+        "summary": "Mlops Register",
+        "operationId": "mlops_register_api_mlops_register_post",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Idempotency-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/mlops/research-track": {
+      "post": {
+        "summary": "Mlops Research Track",
+        "operationId": "mlops_research_track_api_mlops_research_track_post",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Idempotency-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResearchTrackRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/mlops/versions": {
+      "post": {
+        "summary": "Mlops Upload",
+        "operationId": "mlops_upload_api_mlops_versions_post",
+        "requestBody": {
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "$ref": "#/components/schemas/Body_mlops_upload_api_mlops_versions_post"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/mlops/versions/{version_id}": {
+      "get": {
+        "summary": "Mlops Version",
+        "operationId": "mlops_version_api_mlops_versions__version_id__get",
+        "parameters": [
+          {
+            "name": "version_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Version Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/mlops/run": {
+      "post": {
+        "summary": "Mlops Run",
+        "operationId": "mlops_run_api_mlops_run_post",
+        "parameters": [
+          {
+            "name": "Idempotency-Key",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Idempotency-Key"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LifecycleRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "202": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/mlops/tick": {
+      "post": {
+        "summary": "Mlops Tick",
+        "operationId": "mlops_tick_api_mlops_tick_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/mlops/reviews/{review_id}/resolve": {
+      "post": {
+        "summary": "Mlops Review",
+        "operationId": "mlops_review_api_mlops_reviews__review_id__resolve_post",
+        "parameters": [
+          {
+            "name": "review_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Review Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ReviewResolve"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
     "/api/research": {
       "get": {
         "summary": "Research Catalog",
@@ -1653,6 +2059,53 @@
         ],
         "title": "Body_import_research_api_research_import_post"
       },
+      "Body_mlops_upload_api_mlops_versions_post": {
+        "properties": {
+          "file": {
+            "type": "string",
+            "contentMediaType": "application/octet-stream",
+            "title": "File"
+          },
+          "subset": {
+            "type": "string",
+            "enum": [
+              "FD001",
+              "FD002",
+              "FD003",
+              "FD004"
+            ],
+            "title": "Subset"
+          },
+          "label_status": {
+            "type": "string",
+            "enum": [
+              "complete_run_to_failure",
+              "observed_prefix"
+            ],
+            "title": "Label Status"
+          },
+          "provenance": {
+            "type": "string",
+            "maxLength": 1000,
+            "minLength": 1,
+            "title": "Provenance"
+          },
+          "cohort": {
+            "type": "string",
+            "pattern": "^[A-Za-z0-9_-]{1,48}$",
+            "title": "Cohort",
+            "default": "incoming"
+          }
+        },
+        "type": "object",
+        "required": [
+          "file",
+          "subset",
+          "label_status",
+          "provenance"
+        ],
+        "title": "Body_mlops_upload_api_mlops_versions_post"
+      },
       "DashboardResponse": {
         "properties": {
           "mode": {
@@ -1833,6 +2286,159 @@
         },
         "type": "object",
         "title": "HTTPValidationError"
+      },
+      "LifecycleRequest": {
+        "properties": {
+          "version_id": {
+            "type": "string",
+            "pattern": "^DV-FD00[1-4]-[a-f0-9]{20}$",
+            "title": "Version Id"
+          },
+          "training": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/TrainRequest"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "force_retrain": {
+            "type": "boolean",
+            "title": "Force Retrain",
+            "default": false
+          },
+          "monitor_only": {
+            "type": "boolean",
+            "title": "Monitor Only",
+            "default": false
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "version_id"
+        ],
+        "title": "LifecycleRequest"
+      },
+      "LifecycleSettings": {
+        "properties": {
+          "enabled": {
+            "type": "boolean",
+            "title": "Enabled",
+            "default": false
+          },
+          "auto_retrain": {
+            "type": "boolean",
+            "title": "Auto Retrain",
+            "default": false
+          },
+          "orchestrator": {
+            "type": "string",
+            "enum": [
+              "local",
+              "airflow"
+            ],
+            "title": "Orchestrator",
+            "default": "local"
+          },
+          "interval_seconds": {
+            "type": "integer",
+            "maximum": 86400.0,
+            "minimum": 5.0,
+            "title": "Interval Seconds",
+            "default": 60
+          },
+          "max_attempts": {
+            "type": "integer",
+            "maximum": 10.0,
+            "minimum": 1.0,
+            "title": "Max Attempts",
+            "default": 3
+          },
+          "min_engines_per_regime": {
+            "type": "integer",
+            "maximum": 1000.0,
+            "minimum": 5.0,
+            "title": "Min Engines Per Regime",
+            "default": 20
+          },
+          "ks_alpha": {
+            "type": "number",
+            "maximum": 0.1,
+            "exclusiveMinimum": 0.0,
+            "title": "Ks Alpha",
+            "default": 0.01
+          },
+          "ks_min_effect": {
+            "type": "number",
+            "maximum": 1.0,
+            "exclusiveMinimum": 0.0,
+            "title": "Ks Min Effect",
+            "default": 0.2
+          },
+          "drift_sensor_count": {
+            "type": "integer",
+            "maximum": 21.0,
+            "minimum": 1.0,
+            "title": "Drift Sensor Count",
+            "default": 3
+          },
+          "maximum_missing_fraction": {
+            "type": "number",
+            "maximum": 0.2,
+            "minimum": 0.0,
+            "title": "Maximum Missing Fraction",
+            "default": 0.02
+          },
+          "reference_cycles": {
+            "type": "integer",
+            "maximum": 100.0,
+            "minimum": 5.0,
+            "title": "Reference Cycles",
+            "default": 30
+          },
+          "minimum_rmse_improvement_percent": {
+            "type": "number",
+            "maximum": 50.0,
+            "minimum": 0.0,
+            "title": "Minimum Rmse Improvement Percent",
+            "default": 0
+          },
+          "minimum_nasa_improvement_percent": {
+            "type": "number",
+            "maximum": 50.0,
+            "minimum": 0.0,
+            "title": "Minimum Nasa Improvement Percent",
+            "default": 0
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "LifecycleSettings"
+      },
+      "MLOpsBootstrap": {
+        "properties": {
+          "subsets": {
+            "items": {
+              "type": "string",
+              "enum": [
+                "FD001",
+                "FD002",
+                "FD003",
+                "FD004"
+              ]
+            },
+            "type": "array",
+            "maxItems": 4,
+            "minItems": 1,
+            "title": "Subsets"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "title": "MLOpsBootstrap"
       },
       "OrderUpdate": {
         "properties": {
@@ -2031,6 +2637,52 @@
           "run_id"
         ],
         "title": "PromoteRequest"
+      },
+      "RegisterRequest": {
+        "properties": {
+          "run_id": {
+            "type": "string",
+            "pattern": "^AG-FD00[1-4]-[a-f0-9]{12}$",
+            "title": "Run Id"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "run_id"
+        ],
+        "title": "RegisterRequest"
+      },
+      "ResearchTrackRequest": {
+        "properties": {
+          "run_id": {
+            "type": "string",
+            "pattern": "^KAN-FD00[1-4]-(?:paper|conditioned_kan)-\\d{1,10}-[a-f0-9]{12}$",
+            "title": "Run Id"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "run_id"
+        ],
+        "title": "ResearchTrackRequest"
+      },
+      "ReviewResolve": {
+        "properties": {
+          "notes": {
+            "type": "string",
+            "maxLength": 1500,
+            "minLength": 1,
+            "title": "Notes"
+          }
+        },
+        "additionalProperties": false,
+        "type": "object",
+        "required": [
+          "notes"
+        ],
+        "title": "ReviewResolve"
       },
       "Settings": {
         "properties": {

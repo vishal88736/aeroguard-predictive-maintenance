@@ -1,0 +1,20 @@
+# Optional Linux-local Airflow runtime. Core AeroGuard works without Docker.
+# Start the API first, then choose Airflow in its MLOps scheduler settings.
+services:
+  airflow:
+    image: apache/airflow:3.3.2
+    command: standalone
+    network_mode: host
+    environment:
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      AIRFLOW__CORE__DAGS_FOLDER: /opt/airflow/dags
+      AEROGUARD_API_URL: ${AEROGUARD_API_URL:-http://127.0.0.1:8765}
+      PYTHONPATH: /opt/airflow
+    volumes:
+      - ./dags:/opt/airflow/dags:ro
+      - ./aeroguard:/opt/airflow/aeroguard:ro
+      - aeroguard-airflow:/opt/airflow
+    restart: unless-stopped
+
+volumes:
+  aeroguard-airflow:

@@ -62,3 +62,4 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npx playwright install --with-deps chromium
       - run: python scripts/run_browser_contract.py
+      - run: python scripts/run_mlops_browser.py

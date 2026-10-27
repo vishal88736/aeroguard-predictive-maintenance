@@ -48,7 +48,19 @@ Official endpoint metrics use one last observed test window per engine and uncap
 - GPU fitting, the selected model's tensor/CUDA execution and numerical TorchScript compatibility.
 - Actual neural SHAP/LIME calculations, or a measured benefit from the condition gate.
 - Numerical reproduction of the paper's differently repartitioned results.
-- Live physical telemetry, maintenance safety, real dispatch, operational drift detection or field benefit.
+- Live physical telemetry, maintenance safety, real dispatch, field validation of drift thresholds or measured field benefit.
 - Public hosting of the application; a public source repository is separate from application deployment.
 
 The notebook contains GPU sanity checks and export probe comparisons for the user's training run. Missing training remains an explicit pending state. See [RESEARCH_WORKFLOW.md](docs/RESEARCH_WORKFLOW.md).
+
+## Versioned MLOps implementation verification, 27 October 2026
+
+- Current local suite: **140 discovered, 135 passed, 5 optional PyTorch checks skipped**.
+- Disposable source-only checkout: **140 discovered, 133 passed, 7 optional corpus/PyTorch checks skipped**.
+- Research/theme browser regression: **28 checks passed**, no JavaScript errors.
+- New MLOps browser workflows: **30 checks passed**, no JavaScript errors, covering real CPU fitting/MLflow registration on isolated synthetic fixtures, observed-batch inference, fixed-cohort retraining/rejection, scheduling, review resolution and responsive layouts at 1440/1024/390 pixels.
+- Real local workspace: the four retained CPU models were packaged, loaded, numerically checked and registered with champion aliases. Four immutable training snapshots and frozen protocols were created. The existing five training-run records remain; no CPU benchmark refitting or GPU training occurred during initialization.
+- Twelve source dataset files, five supplied PDFs, original CSS/HTML files and the active-model pointer retained their pre-change hashes. Existing model bundles pass their saved integrity manifests.
+- Airflow Compose configuration validates. The HTTP adapter is exercised against a real local API in automated tests. The container/DAG runtime remains unexecuted here because Docker-daemon access is unavailable.
+
+Monitoring now implements local regime-conditioned engine-level KS screening with explicit independence, prefix-length, sample-size and threshold limitations. Field drift validity, maintenance effectiveness and distributed availability remain unestablished. Neural exports can be tracked in MLflow, but numerical GPU execution and calibrated maintenance promotion of neural models remain separate verification requirements. See [MLOPS.md](docs/MLOPS.md).

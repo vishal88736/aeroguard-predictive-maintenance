@@ -21,7 +21,8 @@ from starlette.concurrency import run_in_threadpool
 
 from fleetpm.config import ROOT,DATA_DIR,ARTIFACT_DIR,RUNTIME_DIR,write_json
 from .contracts import (DashboardResponse,Mode,OrderUpdate,PipelineRequest,PromoteRequest,
-                        Settings,Subset,TrainRequest)
+                        Settings,Subset,TrainRequest,LifecycleRequest,LifecycleSettings,
+                        MLOpsBootstrap,RegisterRequest,ResearchTrackRequest,ReviewResolve)
 from .repository import Conflict
 from .services import Service
 from .research import ResearchUnavailable
@@ -40,6 +41,7 @@ def create_app(data_dir=DATA_DIR,artifact_dir=ARTIFACT_DIR,runtime_dir=RUNTIME_D
 
     @asynccontextmanager
     async def lifespan(app):
+        service.mlops.start_scheduler()
         yield
         service.close()
 
@@ -132,6 +134,45 @@ def create_app(data_dir=DATA_DIR,artifact_dir=ARTIFACT_DIR,runtime_dir=RUNTIME_D
 
     @app.get('/api/models')
     def models():return service.models()
+
+    @app.get('/api/mlops')
+    def mlops_overview():return service.mlops.overview()
+
+    @app.put('/api/mlops/settings',response_model=LifecycleSettings)
+    def mlops_settings(payload:LifecycleSettings):return service.mlops.save_settings(payload.model_dump())
+
+    @app.post('/api/mlops/bootstrap',status_code=202)
+    def mlops_bootstrap(payload:MLOpsBootstrap,key:Annotated[str|None,Header(alias='Idempotency-Key')]=None):
+        return service.start('mlops_bootstrap',payload.model_dump(),key)
+
+    @app.post('/api/mlops/register',status_code=202)
+    def mlops_register(payload:RegisterRequest,key:Annotated[str|None,Header(alias='Idempotency-Key')]=None):
+        return service.start('register',payload.model_dump(),key)
+
+    @app.post('/api/mlops/research-track',status_code=202)
+    def mlops_research_track(payload:ResearchTrackRequest,key:Annotated[str|None,Header(alias='Idempotency-Key')]=None):
+        return service.start('research_track',payload.model_dump(),key)
+
+    @app.post('/api/mlops/versions')
+    async def mlops_upload(file:Annotated[UploadFile,File()],subset:Annotated[Subset,Form()],
+                           label_status:Annotated[Literal['complete_run_to_failure','observed_prefix'],Form()],
+                           provenance:Annotated[str,Form(min_length=1,max_length=1000)],
+                           cohort:Annotated[str,Form(pattern=r'^[A-Za-z0-9_-]{1,48}$')]='incoming'):
+        content=await file.read(32*1024*1024+1)
+        return await run_in_threadpool(service.mlops.add_version,subset,file.filename or 'incoming.txt',content,label_status,provenance,cohort)
+
+    @app.get('/api/mlops/versions/{version_id}')
+    def mlops_version(version_id:str):return service.mlops.versions.get(version_id)
+
+    @app.post('/api/mlops/run',status_code=202)
+    def mlops_run(payload:LifecycleRequest,key:Annotated[str|None,Header(alias='Idempotency-Key')]=None):
+        return service.start('lifecycle',payload.model_dump(),key)
+
+    @app.post('/api/mlops/tick')
+    def mlops_tick():return service.mlops.tick()
+
+    @app.post('/api/mlops/reviews/{review_id}/resolve')
+    def mlops_review(review_id:str,payload:ReviewResolve):return service.mlops.resolve_review(review_id,payload.notes)
 
     @app.get('/api/research')
     def research_catalog():return service.research.summary()

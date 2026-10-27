@@ -23,3 +23,38 @@ export interface ResearchSelection {subset:Subset;selected_variant:ResearchVaria
 export interface ResearchRun {run_id:string;subset:Subset;variant:ResearchVariant;seed:number;architecture:'Transformer-KAN-BiLSTM';status:'completed';selected_on_validation:boolean;selection:ResearchSelection;validation_rmse:number;metrics:Metrics;configuration:Record<string,unknown>;explanation_status:'available'|'not_generated';explanations_count:number;local_data_status:'matched'|'missing';inference_dependency_available:boolean;source:string;artifact_count:number}
 export interface ResearchCatalog {status:'available'|'awaiting_user_training';runs:ResearchRun[];invalid_exports:{folder:string;error:string}[];dependencies:{torch:boolean;shap:boolean;lime:boolean};notebook_url:string;requirements_url:string;explanation_order:string[]}
 export interface LocalExplanation {run_id:string;subset:Subset;variant:ResearchVariant;engine_id:number;cycle:number;target:'current_cycle_predicted_rul';units:'cycles';prediction:number;feature_groups:string[];background_source:'fit_engines_only';backgrounds:{partition:'fit';engine_id:number;cycle:number}[];shap:{method:'shap.KernelExplainer';baseline:number;values:number[];additivity_residual_cycles:number;samples:number};lime:{method:'lime.lime_base.LimeBase';coefficients:number[];intercept:number;local_prediction:number;fitting_r2:number|null;heldout_fidelity:{weighted_r2:number|null;weighted_mae_cycles:number};samples:number;heldout_samples:number}}
+
+export interface LifecycleSettings {
+  enabled:boolean;auto_retrain:boolean;orchestrator:'local'|'airflow';interval_seconds:number;max_attempts:number;
+  min_engines_per_regime:number;ks_alpha:number;ks_min_effect:number;drift_sensor_count:number;
+  maximum_missing_fraction:number;reference_cycles:number;
+  minimum_rmse_improvement_percent:number;minimum_nasa_improvement_percent:number;
+}
+export interface LifecycleRequest {version_id:string;training?:Partial<TrainRequest>|null;force_retrain?:boolean;monitor_only?:boolean}
+export interface DatasetVersion {
+  id:string;subset:Subset;sha256:string;label_status:'complete_run_to_failure'|'observed_prefix';namespace:string;
+  filename:string;source_description:string;created_at:string;rows:number;engines:number;
+  missing_sensor_fraction:number;missing_cycles:number;file:string;schema:'cmapss-26-v1';
+  engine_hashes:Record<string,string>;integrity_sha256:string;processing_status?:string;
+  attempts?:number;job_id?:string|null;error?:string|null;result?:Record<string,unknown>|null;
+}
+export interface MLflowRegisteredModel {
+  run_id:string;name:string;version:string;model_uri:string;mlflow_run_id:string;bundle_sha256:string;
+  created_at:string;status:'registered';packaged_inference_verified?:boolean;aliases:Record<string,string>;
+}
+export interface MonitoringCheck {
+  id:string;version_id:string;subset:Subset;reference_model:string|null;created_at:string;
+  policy_snapshot:LifecycleSettings;
+  quality:{passed:boolean;reasons:string[];missing_sensor_fraction:number;missing_cycles:number;engines:number;labels_available:boolean;label_provenance:string};
+  drift:{status:'stable'|'drift'|'insufficient_data'|'reference_required'|'not_checked_quality_failed';drifted_sensors:string[];out_of_domain_fraction:number;
+    comparisons:{regime:number;sensor:string;reference_engines:number;incoming_engines:number;ks_statistic:number;p_value:number;adjusted_p_value:number;drifted:boolean}[]};
+}
+export interface MLOpsReview {id:string;version_id:string;reason:string;status:'open'|'resolved';notes:string;created_at:string;resolved_at:string|null}
+export interface MLOpsOverview {
+  settings:LifecycleSettings;versions:(DatasetVersion|{id:string;status:'invalid';error:string})[];
+  checks:MonitoringCheck[];reviews:MLOpsReview[];protocols:Record<string,unknown>[];
+  registry:(MLflowRegisteredModel|{run_id:string;status:'error';error:string})[];
+  scheduler_running:boolean;orchestration_error:string|null;source:string;neural_status:string;
+  research_tracking:(ResearchRun&{tracking:Record<string,unknown>|null})[];
+}
+export interface EnginePrediction {partition?:'incoming';namespace?:string;source_version_id?:string}
