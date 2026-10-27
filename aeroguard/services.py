@@ -85,13 +85,12 @@ class Service:
 
     def models(self):
         from .baseline import list_models
-        from fleetpm.repository import list_runs
         active=self.active();runs=list_models(self.artifact_dir)
         for run in runs:
             eligible,reason=self.promotion_gate(run,active=active)
             run.update(promotion_eligible=eligible,promotion_reason=reason,active=active.get(run['subset'])==run['run_id'])
         with self.repo.connect() as db:promotions=[dict(r)|{'details':json.loads(r['details'])} for r in db.execute('SELECT * FROM ag_promotions ORDER BY id DESC LIMIT 50')]
-        return {'runs':runs,'active':active,'promotions':promotions,'research_runs':list_runs(self.artifact_dir),
+        return {'runs':runs,'active':active,'promotions':promotions,
                 'gpu_research':self.research.summary()}
 
     def model_detail(self,run_id):

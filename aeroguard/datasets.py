@@ -239,7 +239,7 @@ class DatasetManager:
         import joblib
         import numpy as np
         from threadpoolctl import threadpool_limits
-        from fleetpm.features import Preprocessor, load_engines, split_engines, window_packet
+        from fleetpm.features import Preprocessor, load_engines, split_engines
         from .baseline import FEATURE_NAMES, causal_features
 
         if isinstance(subsets, str):
@@ -262,12 +262,9 @@ class DatasetManager:
                 progress("validation", observed_rows, f"{subset}: validated training trajectories; test files untouched")
             with threadpool_limits(limits=2):
                 processor = Preprocessor(subset, int(seed)).fit(engines, split["fit"])
-            packets = []
             baseline_features_finite = True
             for unit in split["fit"]:
                 transformed = processor.transform(engines[unit])
-                end = min(len(transformed["raw"]) - 1, window - 1)
-                packets.append(window_packet(transformed, end, window))
                 features, _ = causal_features(transformed, window, cap)
                 baseline_features_finite = baseline_features_finite and bool(np.isfinite(features).all())
             folder = self.artifact_dir / "aeroguard" / "prepared" / subset
@@ -279,15 +276,13 @@ class DatasetManager:
                      "rows": observed_rows, "aligned_cycle_slots": sum(len(e["raw"]) for e in engines.values()), "engines": len(engines),
                      "fit_engines": len(split["fit"]), "selection_engines": len(split["selection"]),
                      "calibration_engines": len(split["calibration"]), "window": window, "cap": cap,
-                     "input_shape": [window, 66], "statistic_features": int(packets[0]["stats"].shape[0]),
+                     "input_shape": [len(FEATURE_NAMES)],
                      "baseline_feature_count": len(FEATURE_NAMES), "baseline_window": window,
                      "baseline_features_finite": baseline_features_finite,
                      "feature_contract": {
                          "baseline": {"kind": "past-only rolling tabular features", "features": len(FEATURE_NAMES),
-                                      "window": window, "feature_names": FEATURE_NAMES},
-                         "research": {"kind": "causal token packet and statistics", "input_shape": [window, 66],
-                                      "statistic_features": int(packets[0]["stats"].shape[0])}},
-                     "features_finite": all(bool(np.isfinite(p["x"]).all() and np.isfinite(p["stats"]).all()) for p in packets),
+                                      "window": window, "feature_names": FEATURE_NAMES}},
+                     "features_finite": baseline_features_finite,
                      "preprocessing_fit_ids": processor.fit_ids,
                      "label_role": "RUL derived from complete training endpoints; no official test truth accessed",
                      "scope": "Training-only preprocessing and causal feature audit; no RUL model fit",
@@ -297,5 +292,5 @@ class DatasetManager:
             write_json(folder / "audit.json", audit)
             output.append(audit)
             if progress:
-                progress("features", len(packets), f"{subset}: fitted regime scaling on {len(split['fit'])} fit engines; causal feature audit saved")
+                progress("features", len(split["fit"]), f"{subset}: fitted regime scaling on {len(split['fit'])} fit engines; causal feature audit saved")
         return {"subsets": output, "scope": "Input preparation only; train a model explicitly for RUL inference"}

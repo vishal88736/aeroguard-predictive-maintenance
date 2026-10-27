@@ -1,7 +1,6 @@
 """Training-only regime normalization and causal window construction."""
 
 import math
-from pathlib import Path
 import random
 
 import numpy as np
@@ -9,9 +8,6 @@ from sklearn.cluster import KMeans
 
 from .config import COUNTS
 from .data import parse_rows
-
-STAT_DIM = 189  # 4*21 statistics, 4*21 availability flags, 21 normalized counts
-
 
 def load_engines(path):
     rows=np.asarray(parse_rows(path),dtype=np.float64)
@@ -39,15 +35,6 @@ def split_engines(engines,seed=42,calibration_fraction=.2):
             "fit":sorted(ids[ncal+nselect:])}
     assert len(set(result["fit"])&set(result["selection"]))==0
     return result
-
-
-def grouped_folds(ids,nfolds,seed):
-    ids=list(ids); random.Random(seed).shuffle(ids)
-    if len(ids)<nfolds*2:
-        raise ValueError("Not enough independent engines for these folds")
-    for number in range(nfolds):
-        valid=sorted(ids[number::nfolds]); fit=sorted(set(ids)-set(valid))
-        yield number,fit,valid
 
 
 def prefix_end(engine,seed,minimum=15):
@@ -112,70 +99,3 @@ def observation_gaps(mask,initial=None):
     if initial is not None:
         gaps=gaps+np.where(previous==0,np.asarray(initial)[None,:],0)
     return np.minimum(gaps,30).astype(np.float32)/30
-
-
-def rolling_statistics(sensors,mask):
-    """Only the latest 15 observed cycles; no interpolation using future data."""
-    x=np.asarray(sensors[-15:],dtype=np.float32)
-    m=np.asarray(mask[-15:],dtype=bool)
-    count=m.sum(0); enough=count>=5
-    den=np.maximum(count,1)
-    mean=(x*m).sum(0)/den
-    std=np.sqrt((((x-mean)**2)*m).sum(0)/den)
-    t=np.arange(len(x),dtype=np.float32)[:,None]
-    tmean=(t*m).sum(0)/den
-    slope=(((t-tmean)*(x-mean))*m).sum(0)/np.maximum((((t-tmean)**2)*m).sum(0),1e-6)
-    indices=np.sort(np.where(m,np.arange(len(x))[:,None],-1),axis=0)
-    change_valid=count>=2
-    a,b=indices[-2] if len(x)>1 else indices[-1],indices[-1]
-    columns=np.arange(21)
-    change=np.where(change_valid,(x[np.maximum(b,0),columns]-x[np.maximum(a,0),columns])/np.maximum(1,b-a),0)
-    valid=np.concatenate([enough,enough,enough,change_valid])
-    values=np.concatenate([mean,std,slope,change]).astype(np.float32)
-    values=np.where(valid,values,0)
-    return np.concatenate([values,valid.astype(np.float32),count.astype(np.float32)/15])
-
-
-def window_packet(engine,end,window=30,corrupt=None,seed=0):
-    if not 0<=end<len(engine["raw"]): raise ValueError("Endpoint is outside the observed engine prefix")
-    start=max(0,end-window+1)
-    sensors=engine["sensors"][start:end+1].copy()
-    settings=engine["settings"][start:end+1].copy()
-    trusted=engine["mask"][start:end+1].copy()
-    original=sensors.copy(); original_mask=trusted.copy()
-    rng=np.random.default_rng(seed)
-    if corrupt is not None:
-        mode=corrupt.get("kind","points"); rate=float(corrupt.get("rate",.15))
-        damaged=np.zeros_like(trusted)
-        if mode=="points": damaged=rng.random(trusted.shape)<rate
-        elif mode=="channels": damaged[:,rng.choice(21,max(1,round(21*rate)),replace=False)]=True
-        elif mode=="block":
-            length=min(len(sensors),int(corrupt.get("length",5)))
-            offset=int(rng.integers(0,max(1,len(sensors)-length+1)))
-            damaged[offset:offset+length,rng.choice(21,2,replace=False)]=True
-        elif mode in {"bias","drift","unflagged_bias"}:
-            damaged[:,rng.choice(21,2,replace=False)]=True
-            bias=rng.uniform(-.5,.5,size=(1,21))
-            factor=np.linspace(0,1,len(sensors))[:,None] if mode=="drift" else 1
-            sensors=sensors+damaged*bias*factor
-        elif mode=="noise": sensors+=rng.normal(0,rate,sensors.shape).astype(np.float32)
-        else: raise ValueError("Unsupported corruption mode")
-        if mode not in {"noise","unflagged_bias"}:
-            trusted&=~damaged
-            if mode in {"points","channels","block"}: sensors[~trusted]=0
-    initial=engine["gaps"][start-1]*30 if start>0 else None
-    gaps=observation_gaps(trusted,initial)
-    numeric=np.concatenate([sensors,settings,trusted.astype(np.float32),gaps],axis=1).astype(np.float32)
-    length=len(numeric)
-    x=np.zeros((window,66),np.float32); x[:length]=numeric
-    clean=np.zeros((window,21),np.float32); clean[:length]=original
-    rec=np.zeros((window,21),bool); rec[:length]=original_mask&~trusted
-    valid=np.zeros(window,bool); valid[:length]=True
-    quality=np.array([trusted.mean(),float(gaps.max()),float(engine["domain"][start:end+1].all())],np.float32)
-    channel_outages=int((~trusted.any(0)).sum())
-    domain=bool(engine["domain"][start:end+1].all())
-    basic=bool(quality[0]>=.8 and channel_outages<=2 and gaps.max()<=5/30 and domain)
-    return {"x":x,"length":length,"valid":valid,"stats":rolling_statistics(sensors,trusted),
-            "quality":quality,"clean":clean,"reconstruction_mask":rec,"basic_quality":basic,
-            "channel_outages":channel_outages,"unit":int(engine["unit"]),"end":int(end),
-            "cycle":int(engine["cycles"][end]),"regime":int(engine["regime"][end])}

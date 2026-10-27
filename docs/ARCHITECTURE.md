@@ -33,7 +33,7 @@ Numerical modules have no HTTP dependency. The repository isolates local SQLite 
 
 Engine cohorts are separated before preprocessing and window sampling. Official test targets are parsed only after frozen predictions. Promotion uses development evidence and retains previous versions. Retrospective target curves stay in the evaluation/view layer and never enter triage input packets.
 
-See [the readable SVG](architecture.svg), [ML protocol](ML_PROTOCOL.md), [API contracts](API_CONTRACT.md), and [initial implementation audit](IMPLEMENTATION_AUDIT.md).
+See [the readable SVG](architecture.svg), [ML protocol](ML_PROTOCOL.md), [API contracts](API_CONTRACT.md), and [MLOps lifecycle](MLOPS.md).
 ## Selected GPU research path, 24 October 2026
 
 The primary notebook now follows Transformer–KAN–BiLSTM with a validation-controlled operating-condition gate ablation. SHAP and LIME are strictly post-training/post-evaluation. `aeroguard/research.py` validates notebook exports and provides model/engine/result APIs, optional verified TorchScript inference, and saved explanation evidence. `frontend/research.js` connects these functions to the shared blue/orange/white application shell. Missing training is an explicit pending state; the existing CPU baseline and its calibrated triage remain separately identified.

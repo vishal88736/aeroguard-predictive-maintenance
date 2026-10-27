@@ -11,7 +11,7 @@ All application endpoints use `/api`. Responses are JSON. Errors are `{error:{co
 - `GET /analytics`: dashboard plus model metrics and monitoring notes. Client derives histogram/donut/trends from returned actual assets/history.
 - `GET /data`: `{datasets,provenance,columns}`; dataset items reuse fleetpm inventory keys (`subset,ready,expected_train,expected_test,train_engines,test_engines,rows,files,errors,official_counts_match`).
 - `GET /data/{subset}/preview?partition=train|test|RUL&limit=20`: `{columns,rows,statistics,split,source_label}`. Statistics include counts, missing values, validation errors, cycle bounds; split is null until prepared/model fitted.
-- `GET /models`: `{runs,active,promotions,research_runs}`. Each run has `run_id,subset,training_status,created_at,finished_at,configuration,family,validation_metrics,evaluation,calibration,parameters,artifact_path,mlflow_run_id,promotion_eligible,promotion_reason` where available. Evaluation is `{metrics,predictions?}`. Metrics keys: `rmse,mae,r2,nasa_score,capped_rmse,n_engines`.
+- `GET /models`: `{runs,active,promotions,gpu_research}`. Each run has `run_id,subset,training_status,created_at,finished_at,configuration,family,validation_metrics,evaluation,calibration,parameters,artifact_path,mlflow_run_id,promotion_eligible,promotion_reason` where available. Evaluation is `{metrics,predictions?}`. Metrics keys: `rmse,mae,r2,nasa_score,capped_rmse,n_engines`.
 - `GET /models/{run_id}`: full run, split, artifact file names and hashes.
 - `GET /models/{run_id}/download`: immutable bundle ZIP.
 - `GET /jobs`: `{items:[job]}`. Job: `id,kind,status,configuration,created_at,started_at,finished_at,error,result`. Status queued/running/complete/failed/interrupted.

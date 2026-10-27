@@ -275,18 +275,17 @@ def create_app(data_dir=DATA_DIR,artifact_dir=ARTIFACT_DIR,runtime_dir=RUNTIME_D
     @app.get('/downloads/{name}')
     def downloads(name:str):
         paths={'notebook':ROOT/'notebooks/Transformer_KAN_BiLSTM_GPU.ipynb','kan-notebook':ROOT/'notebooks/Transformer_KAN_BiLSTM_GPU.ipynb',
-            'legacy-notebook':ROOT/'notebooks/C_MAPSS_All_Subsets_CUDA.ipynb','requirements':ROOT/'requirements-app.txt',
+            'requirements':ROOT/'requirements-app.txt',
             'research-requirements':ROOT/'requirements-kan.txt','kan-requirements':ROOT/'requirements-kan.txt',
-            'integrated-requirements':ROOT/'requirements.txt','environment':ROOT/'.env.example',
+            'environment':ROOT/'.env.example',
             'architecture':ROOT/'docs/RESEARCH_WORKFLOW.md'}
         if name not in paths:return error_response('Download not found.','not_found',404)
         return FileResponse(paths[name],filename=paths[name].name,media_type='application/octet-stream')
 
     @app.get('/documents/{name}')
     def diagram(name:str):
-        if name not in {'model.svg','system.svg','research.svg'}:return error_response('Diagram not found.','not_found',404)
-        target=(ROOT/'docs/research-architecture.svg' if name=='research.svg' else
-            ROOT/'docs/legacy-model-architecture.svg' if name=='model.svg' else ROOT/'docs/architecture.svg')
+        if name not in {'system.svg','research.svg'}:return error_response('Diagram not found.','not_found',404)
+        target=ROOT/('docs/research-architecture.svg' if name=='research.svg' else 'docs/architecture.svg')
         return FileResponse(target,media_type='image/svg+xml')
 
     @app.get('/{path:path}',include_in_schema=False)

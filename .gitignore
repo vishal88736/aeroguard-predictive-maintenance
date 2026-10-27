@@ -39,5 +39,5 @@ coverage/
 
 # Supplied third-party documents and original user reference imagery.
 /*.pdf
-/web/assets/golden-gate-reference.png
+/references/
 

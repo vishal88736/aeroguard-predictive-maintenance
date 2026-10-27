@@ -94,6 +94,7 @@ def main():
     names = {item.decode() for item in git("ls-files", "-z").split(b"\0") if item}
     if args.worktree:
         names.update(item.decode() for item in git("ls-files", "--others", "--exclude-standard", "-z").split(b"\0") if item)
+        names.difference_update(item.decode() for item in git("ls-files", "--deleted", "-z").split(b"\0") if item)
     if not names:
         raise SystemExit("No source files selected for publication")
     failures, seen = [], set()

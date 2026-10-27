@@ -18,5 +18,5 @@
 <g transform="translate(655 520)"><rect width="250" height="85" rx="12" fill="#fff2e7" stroke="#ffd5b0"/><text class="h" x="18" y="30">Python triage</text><text class="s" x="18" y="53">RUL / anomaly / trends / persistence</text><text class="s" x="18" y="72">Explanation and complete evidence</text></g>
 <path class="l" d="M470 470V520M595 563H655"/>
 <g transform="translate(655 640)"><rect class="b" width="510" height="50"/><text class="h" x="15" y="23">SQLite · decisions / orders / audit / local outbox</text><text class="s" x="15" y="42">Simulated records · explicit outcomes · no external dispatch</text></g><path class="l" d="M780 605V640"/>
-<text class="s" x="35" y="650">Optional retained research path:</text><text class="s" x="35" y="670">CUDA repair / CNN–GRU / attention / KAN notebook</text><text class="s" x="35" y="690">Separate from the measured CPU baseline</text>
+<text class="s" x="35" y="650">Selected GPU research path:</text><text class="s" x="35" y="670">Transformer → KAN → BiLSTM / final SHAP + LIME</text><text class="s" x="35" y="690">Separate from the measured CPU baseline</text>
 </svg>

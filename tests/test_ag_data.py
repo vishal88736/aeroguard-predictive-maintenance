@@ -103,7 +103,9 @@ class DatasetManagerTests(unittest.TestCase):
                 self.assertFalse(left & right)
         self.assertEqual(audit["preprocessing_fit_ids"], split["fit"])
         self.assertTrue(audit["features_finite"])
-        self.assertEqual(audit["input_shape"], [30, 66])
+        self.assertEqual(audit["input_shape"], [90])
+        self.assertEqual(audit["baseline_feature_count"], 90)
+        self.assertEqual(len(audit["feature_contract"]["baseline"]["feature_names"]), 90)
         self.assertTrue((self.root / "artifacts/aeroguard/prepared/FD001/preprocessing.joblib").is_file())
 
     def test_heldout_engine_values_do_not_change_fitted_preprocessing(self):

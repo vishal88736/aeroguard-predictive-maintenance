@@ -45,9 +45,9 @@ def main():
     def add(file,relative=None):
         file=Path(file)
         if file.is_file():paths[str(relative or file.relative_to(ROOT))]=file
-    for name in ['README.md','VALIDATION.md','requirements.txt','requirements-app.txt','requirements-kan.txt','.env.example','.python-version','.gitignore','compose.mlops.yml','package.json','package-lock.json']:
+    for name in ['README.md','NOTICE.md','requirements.txt','requirements-app.txt','requirements-kan.txt','.env.example','.python-version','.gitignore','compose.mlops.yml','package.json','package-lock.json']:
         add(ROOT/name)
-    for directory in ['aeroguard','fleetpm','frontend','web','notebooks','docs','tests','scripts','dags']:
+    for directory in ['aeroguard','fleetpm','frontend','notebooks','docs','tests','scripts','dags']:
         for file in (ROOT/directory).rglob('*'):
             if file.is_file() and '__pycache__' not in file.parts and '.ipynb_checkpoints' not in file.parts:add(file)
     for file in DATA_DIR.glob('*'):
@@ -70,10 +70,6 @@ def main():
     for file in output.glob('*'):
         if file.is_file() and file.name!='failure.png':add(file)
     add(ROOT/'output/website/measured-baseline-summary.json')
-    for name in ['FINAL_ARCHITECTURE.md','PAPER_REVIEW.md','SOURCE_MANIFEST.json','README.md']:
-        add(ROOT/'output/architecture'/name)
-    for file in (ROOT/'output/architecture/diagrams').glob('*'):add(file)
-    add(ROOT/'output/pdf/Research_Integrated_Fleet_Architecture.pdf')
     package=ROOT/'output/AeroGuard_Project.zip'
     with tempfile.TemporaryDirectory(prefix='aeroguard-package-',dir=RUNTIME_DIR) as temporary:
         state=Path(temporary)/'aeroguard.sqlite'

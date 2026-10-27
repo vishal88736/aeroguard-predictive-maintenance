@@ -1,13 +1,2 @@
-# Python 3.12. Install manually inside .venv; notebook cells never install.
-# For CUDA 13.0, install torch first from the official cu130 index (README).
-# A locally installed 2.14.1+cu130 wheel satisfies torch==2.14.1 below.
-torch==2.14.1
-numpy==2.5.4
-pandas==3.1.0
-scikit-learn==1.9.1
-matplotlib==3.11.2
-joblib==1.6.0
-jupyterlab==4.6.4
-ipykernel==7.4.0
-nbformat==5.11.1
-mlflow==3.17.2
+# Default application environment. CUDA notebook dependencies: requirements-kan.txt.
+-r requirements-app.txt

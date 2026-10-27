@@ -310,7 +310,7 @@ After training, validation-only selection, and frozen official evaluation, the n
 
 SHAP expectation/contributions/additivity residual and LIME coefficients/intercept/held-out fidelity are reported separately. Poor fidelity is retained. These are local model explanations, not causal fault diagnoses or guaranteed component-routing evidence. SHAP/LIME do not enter the fitting loss or mandatory CPU triage path.
 
-See [RESEARCH_WORKFLOW.md](docs/RESEARCH_WORKFLOW.md) for model dimensions, checkpoints, explanation budgets, source-paper adaptations, and export contracts. The earlier [multi-paper CUDA notebook](notebooks/C_MAPSS_All_Subsets_CUDA.ipynb) is retained as an archived experiment.
+See [RESEARCH_WORKFLOW.md](docs/RESEARCH_WORKFLOW.md) for model dimensions, checkpoints, explanation budgets, source-paper adaptations, and export contracts.
 
 ## Import model results into the website
 
@@ -411,7 +411,7 @@ Copy [.env.example](.env.example) to `.env`; do not commit real environment file
 | Cache variables in `.env.example` | Project-local pip, Torch, Jupyter, and other optional caches |
 | Lifecycle settings in the UI/API | Persistent scheduling, retraining, statistical checks, and improvement thresholds |
 
-`FLEET_TRAIN_DEVICE`, `FLEET_INFERENCE_DEVICE`, and `FLEET_PROFILE` belong to the retained earlier workflow. They do not move the current scikit-learn CPU model to CUDA. Configure the selected GPU notebook through its own configuration cell. MLflow currently uses a local SQLite/artifact store under the configured artifact directory.
+Configure CUDA devices, batching and training through the selected GPU notebook's configuration cell. The application baseline runs on CPU. MLflow currently uses a local SQLite/artifact store under the configured artifact directory.
 
 Generated state is separated from source:
 
@@ -422,6 +422,8 @@ artifacts/mlops/datasets/         Content-addressed sensor snapshots/manifests
 artifacts/mlops/protocols/        Frozen engine cohorts, hashes, and cutoffs
 artifacts/mlops/lineage/          Existing-model lineage references
 artifacts/kan_bilstm/             User-trained neural exports
+references/                      Private user-supplied PDFs and reference image
+output/presentation/             Completed Team Taj Mahal PowerPoint
 runtime/aeroguard.sqlite          Jobs, policies, reviews, triage, orders, audit
 ```
 
@@ -440,15 +442,14 @@ aeroguard/
   mlops_registry.py              Complete MLflow packages, aliases, neural tracking
   orchestration.py               Airflow HTTP adapter
   research.py                    Verified neural exports and optional inference
-fleetpm/                         Shared data/features/metrics/rules and earlier ML code
+fleetpm/                         Shared data, preprocessing, metrics, demo signals, and triage storage
 frontend/                        Current themed application, charts, API types, local assets
-notebooks/                       Selected standalone GPU notebook/source and archived notebook
+notebooks/                       Selected standalone GPU notebook and its percent-format source
 dags/aeroguard_lifecycle.py       Optional hourly Airflow 3 lifecycle DAG
 compose.mlops.yml                Optional Linux-local Airflow runtime
-docs/                            Architecture, protocols, API, references, screenshots
+docs/                            Architecture, protocols, API, and the three README screenshots
 scripts/                         Notebook generation, browser QA, packaging, publication checks
 tests/                           Unit/integration tests using isolated temporary fixtures
-web/                             Retained legacy FleetPulse client
 .github/workflows/ci.yml         Source-only and isolated browser checks
 ```
 
@@ -456,7 +457,7 @@ web/                             Retained legacy FleetPulse client
 | --- | --- |
 | [requirements-app.txt](requirements-app.txt) | Current API, CPU pipeline, monitoring, and MLflow registry |
 | [requirements-kan.txt](requirements-kan.txt) | Selected GPU notebook and final SHAP/LIME analysis; install compatible CUDA Torch explicitly |
-| [requirements.txt](requirements.txt) | Earlier integrated experiment, retained for reproducibility |
+| [requirements.txt](requirements.txt) | Default application entry point; includes requirements-app.txt |
 | [package.json](package.json) | Development/browser checks only; no application frontend build |
 
 ## Testing
@@ -475,26 +476,26 @@ To regenerate the notebook deterministically from its percent-format source:
 .venv/bin/python scripts/build_kan_notebook.py
 ```
 
-This generates the notebook; it does not execute training. The tests cover schema/invalid input, prefix invariance and leakage boundaries, actual isolated CPU fitting/calibration, metric direction, anomaly scores, triage persistence, order idempotency, jobs/failures, registry packaging, frozen cohorts, drift checks, retraining/rejection/recovery, APIs, and research export integrity.
+This generates the notebook; it does not execute training. Edit the percent-format source, keep outputs empty, and version configuration/export contracts when changing the model interface. The tests cover schema/invalid input, prefix invariance and leakage boundaries, actual isolated CPU fitting/calibration, metric direction, anomaly scores, triage persistence, order idempotency, jobs/failures, registry packaging, frozen cohorts, drift checks, retraining/rejection/recovery, APIs, and research export integrity.
 
 ### Recorded verification
 
-The latest MLOps verification on **27 October 2026** recorded:
+After removing the retired implementation, verification on **28 October 2026** recorded:
 
 | Check | Result and scope |
 | --- | --- |
-| Python suite with the local corpus | **140 discovered; 135 passed, 5 optional PyTorch checks skipped** |
-| Disposable source-only checkout | **140 discovered; 133 passed, 7 corpus/PyTorch checks skipped** |
+| Python suite with the local corpus | **120 discovered; 120 passed** |
+| Disposable source-only checkout | **120 discovered; 118 passed, 2 corpus checks skipped** |
 | Research/theme browser regression | **28 checks passed**, isolated contract fixtures |
 | New MLOps browser workflows | **30 checks passed**, actual CPU fitting/MLflow on disposable synthetic data |
 | Responsive/browser runtime | 1440, 1024, and 390 px; no JavaScript errors in those recorded runs |
-| Actual retained CPU models | Four complete inference packages loaded, numerically checked, and registered; five existing training-run records retained without refitting |
+| Actual retained CPU models | All five bundles passed integrity checks and matched one saved endpoint prediction each; four active champions retained without refitting |
 | Preservation | Original twelve data files, five supplied PDFs, existing CSS/HTML, active pointer, and saved model bundle integrity retained |
 | Optional Airflow | Compose configuration valid and HTTP adapter tested against a real local API; container/DAG not run |
 
-The earlier 63-check application suite remains historical evidence, separate from the latest 58 research/MLOps browser checks. Research UI fixtures contain labelled dummy model bytes and establish contract behavior only. Synthetic MLOps fitting is not a NASA accuracy measurement. GPU numerical checks skip without PyTorch; two corpus checks skip in a source-only clone.
+Research UI fixtures contain labelled dummy model bytes and establish contract behavior only. Synthetic MLOps fitting is not a NASA accuracy measurement. Two real-corpus checks skip in a source-only clone. The selected notebook performs its own numerical GPU checks when the user runs it; this source/browser suite does not establish CUDA execution.
 
-[VALIDATION.md](VALIDATION.md) retains earlier evidence and the dated MLOps extension. The CI badge reports the published GitHub revision, which may differ from local working changes; it is not evidence of GPU fitting or deployment.
+The CI badge reports the published GitHub revision, which may differ from local working changes; it is not evidence of GPU fitting or deployment. Keep fixture tests, local corpus results and user-run GPU measurements separate when reporting changes.
 
 ### Browser contract tests
 
@@ -528,10 +529,8 @@ Both runners own temporary workspaces/API instances and shut them down afterward
 | [ML_PROTOCOL.md](docs/ML_PROTOCOL.md) | CPU features, engine splits, anomaly reference, calibration, and metrics |
 | [RESEARCH_WORKFLOW.md](docs/RESEARCH_WORKFLOW.md) | Selected notebook, paper adaptations, ablations, explanations, and import/export |
 | [API_CONTRACT.md](docs/API_CONTRACT.md) | API validation, jobs, errors, and endpoint behavior |
-| [VALIDATION.md](VALIDATION.md) | Recorded checks and explicit evidence boundaries |
-| [CONTRIBUTING.md](CONTRIBUTING.md) | Development and reproducibility guidance |
-| [PAPER_REFERENCES.md](docs/PAPER_REFERENCES.md) | Source papers and attribution |
-| [ASSETS.md](docs/ASSETS.md) | Image, font, and icon provenance |
+
+Asset provenance and third-party licenses are consolidated in [NOTICE.md](NOTICE.md).
 
 Selected research reference: Xu, Guo and Zhou, *Research on the Remaining Useful Life Prediction Algorithm for Aero-Engines Based on Transformer–KAN–BiLSTM*, Aerospace 12 (2025), 998. [DOI](https://doi.org/10.3390/aerospace12110998).
 

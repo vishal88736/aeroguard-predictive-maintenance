@@ -5,7 +5,7 @@ import tempfile
 import unittest
 import zipfile
 
-from fleetpm.config import TrainConfig,file_hash,profile_config
+from fleetpm.config import file_hash
 from fleetpm.data import import_zip,inventory,parse_rows,parse_truth
 from fleetpm.metrics import conformal_radius,prediction_interval,regression_metrics
 from helpers import archive_payload,row
@@ -83,11 +83,3 @@ class MetricsTests(unittest.TestCase):
         result=conformal_radius(range(20));self.assertEqual(result['order_statistic'],19);self.assertEqual(result['radius'],18)
         self.assertEqual(prediction_interval(120,result),(102,125))
         small=conformal_radius([1,2]);self.assertIsNone(small['radius']);self.assertEqual(prediction_interval(20,small),(None,None))
-
-    def test_profiles_and_configuration_identity(self):
-        cfg=profile_config('balanced');self.assertEqual(cfg.epochs,60)
-        self.assertNotEqual(cfg.fingerprint('a'),cfg.fingerprint('b'))
-        self.assertNotEqual(cfg.fingerprint('a'),cfg.changed(seed=13).fingerprint('a'))
-        self.assertEqual(profile_config('rigorous').folds,5)
-        for values in [{'subset':'FD005'},{'clean_epochs':0},{'device':'metal'},{'workers':2}]:
-            with self.assertRaises(ValueError):TrainConfig(**values)

@@ -1,4 +1,4 @@
-# Lightweight AeroGuard runtime; optional CUDA research stack stays in requirements.txt.
+# AeroGuard API/CPU runtime. Optional CUDA training uses requirements-kan.txt.
 fastapi==0.161.1
 uvicorn==0.54.0
 pydantic==2.14.1
